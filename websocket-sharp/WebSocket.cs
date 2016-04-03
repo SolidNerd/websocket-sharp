@@ -1897,10 +1897,6 @@ namespace WebSocketSharp
       return data == null ? "'data' is null." : null;
     }
 
-    internal static string CheckSendParameter (FileInfo file)
-    {
-      return file == null ? "'file' is null." : null;
-    }
 
     internal static string CheckSendParameter (string data)
     {
@@ -2565,26 +2561,6 @@ namespace WebSocketSharp
       send (Opcode.Binary, new MemoryStream (data));
     }
 
-    /// <summary>
-    /// Sends the specified <paramref name="file"/> as binary data using the WebSocket connection.
-    /// </summary>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> that represents the file to send.
-    /// </param>
-    public void Send (FileInfo file)
-    {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameter (file);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
-      }
-
-      send (Opcode.Binary, file.OpenRead ());
-    }
 
     /// <summary>
     /// Sends text <paramref name="data"/> using the WebSocket connection.
@@ -2636,35 +2612,6 @@ namespace WebSocketSharp
       sendAsync (Opcode.Binary, new MemoryStream (data), completed);
     }
 
-    /// <summary>
-    /// Sends the specified <paramref name="file"/> as binary data asynchronously using
-    /// the WebSocket connection.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the send to be complete.
-    /// </remarks>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> that represents the file to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
-    /// </param>
-    public void SendAsync (FileInfo file, Action<bool> completed)
-    {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameter (file);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
-      }
-
-      sendAsync (Opcode.Binary, file.OpenRead (), completed);
-    }
 
     /// <summary>
     /// Sends text <paramref name="data"/> asynchronously using the WebSocket connection.
